@@ -1,5 +1,5 @@
 import Lesson
 
-Lesson.func()
-Lesson.func()
+Lesson.func1()
+Lesson.func2()
 
