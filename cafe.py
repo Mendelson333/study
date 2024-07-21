@@ -1,6 +1,6 @@
 import threading
 import time
-from queue import Queue
+from queue import PriorityQueue
 
 # Класс для столов
 class Table:
@@ -11,7 +11,7 @@ class Table:
 # Класс для симуляции работы кафе
 class Cafe:
     def __init__(self, tables):
-        self.queue = Queue()
+        self.queue = PriorityQueue()
         self.tables = tables
 
     def customer_arrival(self):
@@ -28,16 +28,18 @@ class Cafe:
         for table in self.tables:
             if not table.is_busy:
                 table.is_busy = True
-                print(f"Посетитель номер {customer.number} сел за стол {table.number}.")
+                self.queue.put(customer.number, customer)
+                print(f"Посетитель номер {self.queue.get(customer.number)} сел за стол {table.number}.")
                 time.sleep(5)  # Время обслуживания 5 секунд
                 table.is_busy = False  # Освободили столик после обслуживания
                 print(f"Посетитель номер {customer.number} покушал и ушёл.")
                 table_found = True
-                break
+
         if not table_found:
+            self.queue.put(customer.number,customer)
+
             print(f"Посетитель номер {customer.number} ожидает свободный стол.")
-            self.queue.put(customer)
-            self.queue.get()
+
 
 # Класс для посетителей
 class Customer(threading.Thread):
